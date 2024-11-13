@@ -1,0 +1,75 @@
+# POE-group-proj
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(dplyr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+data <- Group_7_data
+
+ggplot(data,
+       mapping = aes(x = `Area of park (km2)`,
+                     y = `Number of species`))+
+  theme_bw() +
+  geom_point(size = 1, alpha = 0.5) + 
+  geom_smooth(method = lm, se = TRUE)+
+  labs(title = "Scatter Plot of the number of bird species against the area of parks",
+         subtitle = "2024", 
+         x = "Area of park, in km2",
+         y = "Species richness",
+         colour = " ") 
+
+
+
+```
+square model? ANOVA model? 
+
+```{r}
+data %>%
+ggplot(mapping = aes(x = `Area of park (km2)`)) +
+    geom_histogram(binwidth = 0.0001, fill = "lightblue", color = "black") 
+```
+the histogram is skewed to left too much
+maybe square the area of park and analyse the distribution based on it? 
+That way, small values are more after squared, and the normality of data is increased? 
+
+```{r}
+data %>%
+  mutate(squared_area = (`Area of park (km2)`)^2) %>%
+  ggplot(mapping = aes(x = `squared_area`)) +
+    geom_histogram(binwidth = 0.0005, fill = "lightblue", color = "black")
+
+```
+```{r}
+
+data  %>%
+  mutate(size = case_when(
+    `Area of park (km2)` <= 0.01 ~ "Small", 
+    `Area of park (km2)` > 0.01 & `Area of park (km2)` <= 0.3 ~ "Medium", 
+    TRUE ~ "Large"
+  )) 
+
+mean_area <- data%>%
+  group_by (size) %>% 
+  summarise (mean_area =  mean (`Area of park (km2)`) ,
+					stdev = sd (`Area of park (km2)`) , 
+					se_area = sd (`Area of park (km2)`) / sqrt (n () ) )
+
+```
+Preparation for ANOVA, devided parks by three differet types of size, 
+summarised statistical values
+
+```{r}
+
+
+plot(mean_area ~ as.factor(size), data = data, ylim=c(0,15), 
+        xlab= "Area of Park", ylab = "Species richness")
+
+```
+
+
+
+
