@@ -9,12 +9,24 @@ library(tidyverse)
 library(readxl)
 library(dplyr)
 library(ggplot2)
+library(tidymodels)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
 data <- Group_7_data
 
+# Linear regression
+linear_reg <- 
+  linear_reg() %>%
+  set_engine("lm") %>%
+  fit(`Number of species` ~ `Area of park (km2)`, data = data)
+tidy(linear_reg)
+
+# R-squared
+glance(linear_reg)$adj.r.squared
+
+# plotgraph
 ggplot(data,
        mapping = aes(x = `Area of park (km2)`,
                      y = `Number of species`))+
@@ -26,8 +38,6 @@ ggplot(data,
          x = "Area of park, in km2",
          y = "Species richness",
          colour = " ") 
-
-
 
 ```
 square model? ANOVA model? 
@@ -105,9 +115,15 @@ p <- plot( mean_richness ~ as.factor(size), data = mean, ylim=c(0,20),
 
 ```
 
-```{r}
+```{r ANOVA TABLE}
+library(knitr)
+library(xtable)
 
-
+a <- aov(`Number of species` ~ size, data=ANOVA_data) 
+anova_table <- anova(a)
+summary(anova_table)
+kable(anova_table)
+xtable_anova <- xtable(anova_table)
 ```
 
 
