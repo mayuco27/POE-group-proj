@@ -1,7 +1,7 @@
 # POE-group-proj
 
 ```{r}
-install.packages("ggplot2")
+
 ```
 
 ```{r}
@@ -39,6 +39,75 @@ ggplot(data,
          y = "Species richness",
          colour = " ") 
 
+
+
+
+# find the relaitonship between log variables for better linear model fit
+
+data <- data %>%
+  mutate(log_pa = log(`Area of park (km2)`),
+         log_sr = log(`Number of species`))
+
+logplot <- linear_reg() %>%
+  set_engine("lm") %>%
+  fit(`log_sr` ~ `log_pa`, data = data)
+tidy(logplot)
+
+# R-squared
+glance(logplot)$adj.r.squared
+
+# plotgraph of log variables
+
+ggplot(data,
+       mapping = aes(x = `log_pa`,
+                     y = `log_sr`))+
+  theme_bw() +
+  geom_point(size = 1, alpha = 0.5) + 
+  geom_smooth(method = lm, se = TRUE)+
+  labs(title = "Scatter Plot of the number of bird species against the area of parks",
+         subtitle = "2024", 
+         x = "log - Area of park, in km2",
+         y = "log - Species richness",
+         colour = " ") 
+
+
+
+
+
+
+
+# polynomial fit of non-log variables
+
+
+
+# polynomial fit for species richness vs park area
+
+ggplot(data,
+       mapping = aes(x = `Area of park (km2)`,
+                     y = `Number of species`))+
+  theme_bw() +
+  geom_point(size = 1, alpha = 0.5) + 
+  geom_smooth(method = lm,  formula = y ~ poly(x,2), se = TRUE)+
+  labs(title = "Scatter Plot of the number of bird species against the area of parks",
+         subtitle = "2024", 
+         x = "Area of park, in km2",
+         y = "Species richness",
+         colour = " ") 
+polyfit 
+glance(polyfit)$adj.r.squared
+
+# power 2 variables
+ggplot(data,
+       mapping = aes(x = I(`Area of park (km2)`^2),
+                     y = I(`Number of species`^2)))+
+  theme_bw() +
+  geom_point(size = 1, alpha = 0.5) + 
+  geom_smooth(method = lm,  formula = y ~ poly(x,2), se = TRUE)+
+  labs(title = "Scatter Plot of the number of bird species against the area of parks",
+         subtitle = "2024", 
+         x = "Area of park, in km2",
+         y = "Species richness",
+         colour = " ") 
 ```
 square model? ANOVA model? 
 
