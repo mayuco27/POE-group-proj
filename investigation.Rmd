@@ -118,6 +118,8 @@ p <- plot( mean_richness ~ as.factor(size), data = mean, ylim=c(0,20),
 ```{r ANOVA TABLE}
 library(knitr)
 library(xtable)
+library(tidyverse)
+
 
 a <- aov(`Number of species` ~ size, data=ANOVA_data) 
 anova_table <- anova(a)
