@@ -40,7 +40,19 @@ ggplot(data,
          colour = " ") 
 
 
-
+# non-log variables with log fit
+ggplot(data,
+       mapping = aes(x = `log_pa`,
+                     y = `log_sr`))+
+  theme_bw() +
+  geom_point(size = 1, alpha = 0.5) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(title = "Scatter Plot of the number of bird species against the area of parks",
+         subtitle = "2024", 
+         x = "Area of park, in km2",
+         y = "Species richness",
+         colour = " ") 
 
 # find the relaitonship between log variables for better linear model fit
 
@@ -87,14 +99,16 @@ ggplot(data,
                      y = `Number of species`))+
   theme_bw() +
   geom_point(size = 1, alpha = 0.5) + 
-  geom_smooth(method = lm,  formula = y ~ poly(x,2), se = TRUE)+
+  geom_smooth(method = lm,  formula = y ~ log(x), se = TRUE)+
   labs(title = "Scatter Plot of the number of bird species against the area of parks",
          subtitle = "2024", 
          x = "Area of park, in km2",
          y = "Species richness",
          colour = " ") 
-polyfit 
-glance(polyfit)$adj.r.squared
+logfit
+data <- as.data.frame(data) 
+logmodel <- lm(`Number of species` ~ log(`Area of park (km2)`), data = data)
+summary(logmodel)$adj.r.squared
 
 # power 2 variables
 ggplot(data,
